@@ -3,7 +3,8 @@
 #include "params.h"
 #include "poly.h"
 #include "polyvec.h"
-#include "randombytes.h"
+#include "../pq_random.h"
+#include "utils/s2n_safety.h"
 #include "symmetric.h"
 
 #include <stdint.h>
@@ -181,14 +182,15 @@ static void gen_matrix(polyvec *a, const uint8_t *seed, int transposed) {
 * Arguments:   - uint8_t *pk: pointer to output public key (of length KYBER_INDCPA_PUBLICKEYBYTES bytes)
 *              - uint8_t *sk: pointer to output private key (of length KYBER_INDCPA_SECRETKEYBYTES bytes)
 **************************************************/
-void PQCLEAN_KYBER512_CLEAN_indcpa_keypair(uint8_t *pk, uint8_t *sk) {
+int PQCLEAN_KYBER512_CLEAN_indcpa_keypair(uint8_t *pk, uint8_t *sk) {
     polyvec a[KYBER_K], e, pkpv, skpv;
     uint8_t buf[2 * KYBER_SYMBYTES];
     uint8_t *publicseed = buf;
     uint8_t *noiseseed = buf + KYBER_SYMBYTES;
     uint8_t nonce = 0;
 
-    randombytes(buf, KYBER_SYMBYTES);
+	GUARD_AS_POSIX(get_random_bytes(buf, KYBER_SYMBYTES));
+    // randombytes(buf, KYBER_SYMBYTES);
     hash_g(buf, buf, KYBER_SYMBYTES);
 
     gen_a(a, publicseed);
@@ -214,6 +216,7 @@ void PQCLEAN_KYBER512_CLEAN_indcpa_keypair(uint8_t *pk, uint8_t *sk) {
 
     pack_sk(sk, &skpv);
     pack_pk(pk, &pkpv, publicseed);
+	return 0;
 }
 
 /*************************************************

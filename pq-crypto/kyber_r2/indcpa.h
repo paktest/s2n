@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-void PQCLEAN_KYBER512_CLEAN_indcpa_keypair(
+int PQCLEAN_KYBER512_CLEAN_indcpa_keypair(
     uint8_t *pk,
     uint8_t *sk);
 

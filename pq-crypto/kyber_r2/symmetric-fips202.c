@@ -1,4 +1,4 @@
-#include "fips202.h"
+#include "fips202_kyber_r2.h"
 #include "symmetric.h"
 
 #include <stdlib.h>
@@ -59,5 +59,5 @@ void PQCLEAN_KYBER512_CLEAN_shake256_prf(uint8_t *output, size_t outlen, const u
     }
     extkey[i] = nonce;
 
-    shake256(output, outlen, extkey, KYBER_SYMBYTES + 1);
+    shake256_kyber(output, outlen, extkey, KYBER_SYMBYTES + 1);
 }
